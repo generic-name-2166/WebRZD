@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Операционная информация</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <span class="menu-icon" id="menuToggle">≡</span>
+        <div class="title">Постоматы</div>
+        <button class="add-btn">+ Добавить</button>
+        <select class="filter">
+            <option>Фильтр</option>
+        </select>
+    </header>
+    <div class="overlay" id="overlay"></div>
+    <div class="container">
+        <nav id="sidebar">
+            <ul>
+                <li><a href="{{ url_for('scan_documents') }}" class="{{ 'active' if current_page == 'scan-documents' else '' }}">Отсканировать документы</a></li>
+                <li><a href="#" class="{{ 'active' if current_page == 'put-documents' else '' }}">Положить документы в ячейку</a></li>
+                <li><a href="#" class="{{ 'active' if current_page == 'edit-documents' else '' }}">Редактировать список регистрируемых документов</a></li>
+                <li><a href="#" class="{{ 'active' if current_page == 'change-contents' else '' }}">Изменить содержимое ячеек</a></li>
+                <li><a href="#" class="{{ 'active' if current_page == 'history' else '' }}">История</a></li>
+            </ul>
+        </nav>
+        <main>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Название</th>
+                        <th>Состояние</th>
+                        <th>Дата создания</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for group in groups %}
+                        <tr class="group-header">
+                            <td colspan="5">{{ group.name }}</td>
+                        </tr>
+                        {% for item in group.items() %}
+                            <tr>
+                                <td>{{ item.id }}</td>
+                                <td>{{ item.name }}</td>
+                                <td><span class="state">{{ item.state }}</span></td>
+                                <td>{{ item.date }}</td>
+                                <td class="actions">
+                                    <img src="https://via.placeholder.com/20?text=E" alt="Edit">
+                                    <img src="https://via.placeholder.com/20?text=X" alt="Delete">
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </main>
+    </div>
+    <script>
+        // Функционал выдвижного меню
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+        
+        // Закрытие меню при клике на overlay
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+        
+        // Закрытие меню при клике вне его
+        document.addEventListener('click', function(event) {
+            const isClickInsideSidebar = sidebar.contains(event.target);
+            const isClickOnToggle = menuToggle.contains(event.target);
+            
+            if (!isClickInsideSidebar && !isClickOnToggle && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

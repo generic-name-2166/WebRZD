@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отсканировать документы</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/scan-documents.css') }}">
+</head>
+<body>
+    <header>
+        <span class="menu-icon" id="menuToggle">≡</span>
+        <div class="title">Отсканировать документы</div>
+        <a href="{{ url_for('index') }}" class="back-btn">← Назад</a>
+    </header>
+    <div class="overlay" id="overlay"></div>
+    <div class="container">
+        <nav id="sidebar">
+            <ul>
+                <li><a href="{{ url_for('scan_documents') }}" class="{{ 'active' if current_page == 'scan-documents' else '' }}">Отсканировать документы</a></li>
+                <li><a href="#" class="{{ 'active' if current_page == 'put-documents' else '' }}">Положить документы в ячейку</a></li>
+                <li><a href="#" class="{{ 'active' if current_page == 'edit-documents' else '' }}">Редактировать список регистрируемых документов</a></li>
+                <li><a href="#" class="{{ 'active' if current_page == 'change-contents' else '' }}">Изменить содержимое ячеек</a></li>
+                <li><a href="#" class="{{ 'active' if current_page == 'history' else '' }}">История</a></li>
+            </ul>
+        </nav>
+        <main class="scan-main">
+            <div class="scan-layout">
+                <!-- Секция устройств сканирования -->
+                <div class="scan-section">
+                    <h2 class="section-title">Подключенные сканирующие устройства</h2>
+                    <div class="devices-grid">
+                        {% for device in scanning_devices %}
+                        <button class="device-card {{ 'connected' if device.connected else 'disconnected' }}" 
+                                data-device-id="{{ device.id }}" 
+                                data-device-name="{{ device.name }}"
+                                {% if not device.connected %}disabled{% endif %}>
+                            <div class="device-info">
+                                <div class="device-name">{{ device.name }}</div>
+                                <div class="device-status">{{ device.status }}</div>
+                            </div>
+                            <div class="device-status-indicator {{ 'online' if device.connected else 'offline' }}">
+                                {{ '●' if device.connected else '○' }}
+                            </div>
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Секция управления сканированием -->
+                <div class="scan-section">
+                    <h2 class="section-title">Управление сканированием</h2>
+                    <div class="scan-controls">
+                        <button class="scan-btn primary" id="startScanBtn">
+                            Запустить сканирование
+                        </button>
+                        <button class="scan-btn secondary" id="saveBtn" disabled>
+                            Сохранить отсканированные документы
+                        </button>
+                        <div class="scan-progress" id="scanProgress" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <div class="progress-text">Сканирование в процессе...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Секция отсканированных документов -->
+                <div class="scan-section">
+                    <h2 class="section-title">Отсканированные документы</h2>
+                    <div class="documents-container">
+                        {% if scanned_documents %}
+                        <div class="documents-list">
+                            {% for doc in scanned_documents %}
+                            <div class="document-card">
+                                <div class="document-info">
+                                    <div class="document-name">{{ doc.name }}</div>
+                                    <div class="document-date">Отсканирован: {{ doc.scanned_at }}</div>
+                                </div>
+                                <div class="document-actions">
+                                    <button class="registration-badge {{ 'required' if doc.requires_registration else 'optional' }}" 
+                                            data-doc-id="{{ doc.id }}" 
+                                            data-requires-registration="{{ 'true' if doc.requires_registration else 'false' }}">
+                                        <span class="badge-text">{{ 'Требует регистрации в ЕАСД-2' if doc.requires_registration else 'Регистрация не требуется' }}</span>
+                                    </button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="no-documents">
+                            <div class="no-documents-icon"></div>
+                            <div class="no-documents-text">Документы для сканирования отсутствуют</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        // Функционал выдвижного меню
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        
+        menuToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        });
+        
+        // Закрытие меню при клике на overlay
+        overlay.addEventListener('click', function() {
+            sidebar.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+        
+        // Функционал выбора устройства сканирования
+        document.addEventListener('click', function(event) {
+            if (event.target.closest('.device-card')) {
+                const deviceCard = event.target.closest('.device-card');
+                
+                // Проверяем, что устройство подключено
+                if (deviceCard.disabled) return;
+                
+                // Убираем выделение с других устройств
+                document.querySelectorAll('.device-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                
+                // Выделяем выбранное устройство
+                deviceCard.classList.add('selected');
+                
+                // Можно добавить логику для сохранения выбранного устройства
+                const deviceId = deviceCard.dataset.deviceId;
+                const deviceName = deviceCard.dataset.deviceName;
+                console.log('Выбрано устройство:', deviceName);
+            }
+        });
+        
+        // Функционал сканирования
+        const startScanBtn = document.getElementById('startScanBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const scanProgress = document.getElementById('scanProgress');
+        const progressFill = document.getElementById('progressFill');
+        
+        startScanBtn.addEventListener('click', function() {
+            // Проверяем, выбрано ли устройство
+            const selectedDevice = document.querySelector('.device-card.selected');
+            if (!selectedDevice) {
+                alert('Пожалуйста, выберите устройство для сканирования!');
+                return;
+            }
+            
+            // Имитация процесса сканирования
+            startScanBtn.disabled = true;
+            startScanBtn.textContent = 'Сканирование...';
+            scanProgress.style.display = 'block';
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 20;
+                if (progress > 100) progress = 100;
+                
+                progressFill.style.width = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    startScanBtn.disabled = false;
+                    startScanBtn.textContent = 'Запустить сканирование';
+                    saveBtn.disabled = false;
+                    scanProgress.style.display = 'none';
+                    
+                    // Здесь можно добавить логику обновления списка документов
+                    alert('Сканирование завершено!');
+                }
+            }, 500);
+        });
+        
+        saveBtn.addEventListener('click', function() {
+            alert('Документы сохранены!');
+        });
+        
+        // Функционал переключения статуса регистрации
+        document.addEventListener('click', function(event) {
+            if (event.target.closest('.registration-badge')) {
+                const badge = event.target.closest('.registration-badge');
+                const icon = badge.querySelector('.badge-icon');
+                const text = badge.querySelector('.badge-text');
+                const isCurrentlyRequired = badge.classList.contains('required');
+                
+                // Переключение класса и данных
+                if (isCurrentlyRequired) {
+                    badge.classList.remove('required');
+                    badge.classList.add('optional');
+                    badge.dataset.requiresRegistration = 'false';
+                    text.textContent = 'Регистрация не требуется';
+                } else {
+                    badge.classList.remove('optional');
+                    badge.classList.add('required');
+                    badge.dataset.requiresRegistration = 'true';
+                    text.textContent = 'Требует регистрации в ЕАСД-2';
+                }
+                
+                // Анимация изменения
+                badge.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    badge.style.transform = 'scale(1)';
+                }, 150);
+            }
+        });
+    </script>
+</body>
+</html>

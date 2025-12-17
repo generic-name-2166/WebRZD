@@ -1,0 +1,541 @@
+/* Стили для страницы сканирования документов */
+
+/* Кнопка "Назад" в шапке - современный дизайн */
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--rzd-red), #C11A1F);
+    border: 2px solid var(--rzd-red);
+    color: var(--rzd-white);
+    padding: 12px 20px;
+    cursor: pointer;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(227, 30, 36, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.back-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(227, 30, 36, 0.4);
+    background: linear-gradient(135deg, #C11A1F, var(--rzd-red));
+    color: var(--rzd-white);
+}
+
+.back-btn:active {
+    transform: translateY(0);
+}
+
+.back-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.back-btn:hover::before {
+    left: 100%;
+}
+
+/* Основной layout для сканирования с современным дизайном */
+.scan-main {
+    flex: 1;
+    padding: 32px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: calc(100vh - 64px);
+    position: relative;
+}
+
+.scan-main::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(227, 30, 36, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(227, 30, 36, 0.05) 0%, transparent 50%),
+        linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.1) 50%, transparent 60%);
+    pointer-events: none;
+}
+
+.scan-layout {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Секции */
+.scan-section {
+    background: var(--rzd-white);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px var(--rzd-shadow);
+}
+
+.section-title {
+    color: var(--rzd-text-dark);
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 20px 0;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--rzd-red);
+}
+
+/* Секция устройств сканирования */
+.devices-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+/* Карточки устройств - кнопки */
+.device-card {
+    border: 2px solid var(--rzd-border);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    background: var(--rzd-white);
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+}
+
+.device-card.connected {
+    border-color: var(--rzd-success);
+    background: linear-gradient(135deg, var(--rzd-white), rgba(40, 167, 69, 0.02));
+}
+
+.device-card.disconnected {
+    border-color: var(--rzd-text-gray);
+    background: linear-gradient(135deg, var(--rzd-white), rgba(108, 117, 125, 0.02));
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.device-card.connected:hover:not(:disabled) {
+    border-color: var(--rzd-red);
+    box-shadow: 0 6px 20px rgba(227, 30, 36, 0.15);
+    transform: translateY(-3px);
+    background: linear-gradient(135deg, var(--rzd-white), var(--rzd-red-light));
+}
+
+.device-card.selected {
+    border-color: var(--rzd-red);
+    background: linear-gradient(135deg, var(--rzd-red-light), var(--rzd-white));
+    box-shadow: 0 6px 20px rgba(227, 30, 36, 0.3);
+    transform: translateY(-2px);
+}
+
+.device-card:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.device-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.device-card.connected:hover:not(:disabled)::before {
+    left: 100%;
+}
+
+.device-info {
+    flex: 1;
+}
+
+.device-name {
+    font-weight: 600;
+    color: var(--rzd-text-dark);
+    margin-bottom: 4px;
+}
+
+.device-status {
+    font-size: 13px;
+    color: var(--rzd-text-gray);
+}
+
+.device-status-indicator {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.device-status-indicator.online {
+    color: var(--rzd-success);
+}
+
+.device-status-indicator.offline {
+    color: var(--rzd-text-gray);
+}
+
+/* Секция управления сканированием */
+.scan-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Выбор принтера */
+.printer-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.control-label {
+    font-weight: 600;
+    color: var(--rzd-text-dark);
+    font-size: 14px;
+}
+
+.printer-select {
+    padding: 12px 16px;
+    border: 2px solid var(--rzd-border);
+    border-radius: 12px;
+    background: var(--rzd-white);
+    color: var(--rzd-text-dark);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23333' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 20px;
+    padding-right: 40px;
+}
+
+.printer-select:hover {
+    border-color: var(--rzd-red);
+    box-shadow: 0 4px 12px rgba(227, 30, 36, 0.15);
+}
+
+.printer-select:focus {
+    outline: none;
+    border-color: var(--rzd-red);
+    box-shadow: 0 0 0 3px rgba(227, 30, 36, 0.1);
+}
+
+/* Кнопки сканирования - современный дизайн */
+.scan-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px 28px;
+    border: 2px solid;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    min-height: 52px;
+}
+
+.scan-btn.primary {
+    background: linear-gradient(135deg, var(--rzd-red), #C11A1F);
+    color: var(--rzd-white);
+    border-color: var(--rzd-red);
+    box-shadow: 0 4px 12px rgba(227, 30, 36, 0.3);
+}
+
+.scan-btn.primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, #C11A1F, var(--rzd-red));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(227, 30, 36, 0.4);
+}
+
+.scan-btn.secondary {
+    background: linear-gradient(135deg, var(--rzd-white), #f8f9fa);
+    color: var(--rzd-red);
+    border-color: var(--rzd-red);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.scan-btn.secondary:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--rzd-red-light), var(--rzd-white));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(227, 30, 36, 0.2);
+    color: var(--rzd-red);
+}
+
+.scan-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+.scan-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.scan-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.scan-btn:hover:not(:disabled)::before {
+    left: 100%;
+}
+
+.btn-icon {
+    font-size: 16px;
+}
+
+/* Прогресс сканирования */
+.scan-progress {
+    padding: 16px;
+    background: var(--rzd-red-light);
+    border-radius: 8px;
+    border: 1px solid var(--rzd-red);
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--rzd-white);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--rzd-red), var(--rzd-red-hover));
+    width: 0%;
+    transition: width 0.3s ease;
+    border-radius: 4px;
+}
+
+.progress-text {
+    color: var(--rzd-red);
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* Секция отсканированных документов */
+.documents-container {
+    min-height: 200px;
+}
+
+.documents-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.document-card {
+    border: 1px solid var(--rzd-border);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.document-card:hover {
+    border-color: var(--rzd-red);
+    box-shadow: 0 2px 8px var(--rzd-shadow);
+    background: var(--rzd-red-light);
+}
+
+.document-info {
+    flex: 1;
+}
+
+.document-name {
+    font-weight: 600;
+    color: var(--rzd-text-dark);
+    margin-bottom: 4px;
+}
+
+.document-date {
+    font-size: 13px;
+    color: var(--rzd-text-gray);
+}
+
+.registration-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 2px solid;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    user-select: none;
+    min-width: 200px;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.registration-badge.required {
+    background: linear-gradient(135deg, rgba(227, 30, 36, 0.9), rgba(227, 30, 36, 0.7));
+    color: var(--rzd-white);
+    border-color: var(--rzd-red);
+    box-shadow: 0 4px 12px rgba(227, 30, 36, 0.3);
+}
+
+.registration-badge.optional {
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.9), rgba(40, 167, 69, 0.7));
+    color: var(--rzd-white);
+    border-color: var(--rzd-success);
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+}
+
+.registration-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+}
+
+.registration-badge.required:hover {
+    background: linear-gradient(135deg, var(--rzd-red), #C11A1F);
+    box-shadow: 0 6px 20px rgba(227, 30, 36, 0.4);
+}
+
+.registration-badge.optional:hover {
+    background: linear-gradient(135deg, var(--rzd-success), #1e7e34);
+    box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+.registration-badge:active {
+    transform: translateY(0);
+}
+
+.registration-badge::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.registration-badge:hover::before {
+    left: 100%;
+}
+
+.badge-icon {
+    font-size: 16px;
+    z-index: 1;
+}
+
+.badge-text {
+    z-index: 1;
+}
+
+/* Пустое состояние */
+.no-documents {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+    text-align: center;
+}
+
+.no-documents-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+    opacity: 0.5;
+}
+
+.no-documents-text {
+    color: var(--rzd-text-gray);
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* Адаптивный дизайн */
+@media (max-width: 768px) {
+    .scan-main {
+        padding: 16px;
+    }
+    
+    .scan-layout {
+        gap: 20px;
+    }
+    
+    .scan-section {
+        padding: 16px;
+    }
+    
+    .devices-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .document-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .device-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .scan-btn {
+        padding: 14px 20px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 12px 16px;
+    }
+    
+    header .title {
+        font-size: 18px;
+    }
+    
+    .back-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+}

@@ -1,0 +1,368 @@
+/* Корпоративная палитра РЖД - Красный и Белый */
+:root {
+    --rzd-red: #E31E24;
+    --rzd-red-hover: #C11A1F;
+    --rzd-red-light: #FFE8E9;
+    --rzd-white: #FFFFFF;
+    --rzd-background: #F8F9FA;
+    --rzd-text-dark: #2C3E50;
+    --rzd-text-gray: #6C757D;
+    --rzd-border: #E9ECEF;
+    --rzd-success: #28A745;
+    --rzd-shadow: rgba(0, 0, 0, 0.08);
+    --rzd-shadow-hover: rgba(0, 0, 0, 0.12);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: var(--rzd-background);
+    color: var(--rzd-text-dark);
+    line-height: 1.6;
+}
+
+/* Современная шапка */
+header {
+    background: var(--rzd-white);
+    color: var(--rzd-text-dark);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px var(--rzd-shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+header .menu-icon {
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--rzd-red);
+    padding: 8px;
+    border-radius: 8px;
+    transition: background 0.3s ease;
+}
+
+header .menu-icon:hover {
+    background: var(--rzd-red-light);
+}
+
+header .title {
+    flex: 1;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--rzd-red);
+}
+
+header .add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--rzd-red), #C11A1F);
+    border: 2px solid var(--rzd-red);
+    color: var(--rzd-white);
+    padding: 12px 20px;
+    cursor: pointer;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(227, 30, 36, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+header .add-btn:hover {
+    background: linear-gradient(135deg, #C11A1F, var(--rzd-red));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(227, 30, 36, 0.4);
+}
+
+header .add-btn:active {
+    transform: translateY(0);
+}
+
+header .add-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+header .add-btn:hover::before {
+    left: 100%;
+}
+
+header .filter {
+    background: linear-gradient(135deg, var(--rzd-white), #f8f9fa);
+    border: 2px solid var(--rzd-border);
+    color: var(--rzd-text-dark);
+    padding: 12px 16px;
+    cursor: pointer;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-left: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+header .filter:hover {
+    border-color: var(--rzd-red);
+    box-shadow: 0 4px 12px rgba(227, 30, 36, 0.15);
+    transform: translateY(-1px);
+}
+
+header .filter::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(227, 30, 36, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+header .filter:hover::before {
+    left: 100%;
+}
+
+/* Overlay для затемнения фона */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 98;
+}
+
+.overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.container {
+    display: flex;
+    min-height: calc(100vh - 64px);
+}
+
+/* Современная боковая навигация (выдвижная) */
+nav {
+    background: var(--rzd-white);
+    color: var(--rzd-text-dark);
+    width: 280px;
+    padding: 24px 0;
+    box-shadow: 2px 0 8px var(--rzd-shadow);
+    position: fixed;
+    left: -280px;
+    top: 64px;
+    height: calc(100vh - 64px);
+    transition: left 0.3s ease;
+    z-index: 99;
+    overflow-y: auto;
+}
+
+nav.active {
+    left: 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+nav li {
+    margin: 4px 16px;
+}
+
+nav li a {
+    display: block;
+    padding: 12px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    font-size: 15px;
+    color: var(--rzd-text-gray);
+    text-decoration: none;
+    cursor: pointer;
+}
+
+nav li a:hover {
+    background: var(--rzd-red-light);
+    color: var(--rzd-red);
+}
+
+nav li a.active {
+    background: var(--rzd-red);
+    color: var(--rzd-white);
+    font-weight: 500;
+    box-shadow: 0 2px 4px var(--rzd-shadow);
+}
+
+nav li a.active:hover {
+    background: var(--rzd-red-hover);
+    color: var(--rzd-white);
+}
+
+/* Современный основной контент */
+main {
+    flex: 1;
+    padding: 32px;
+    background: var(--rzd-background);
+}
+
+/* Современная таблица */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--rzd-white);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px var(--rzd-shadow);
+}
+
+thead {
+    background: var(--rzd-red);
+}
+
+th {
+    background: var(--rzd-red);
+    color: var(--rzd-white);
+    padding: 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+tbody tr {
+    transition: all 0.3s ease;
+}
+
+tbody tr:hover:not(.group-header) {
+    background: var(--rzd-red-light);
+    transform: scale(1.01);
+}
+
+td {
+    padding: 16px;
+    border-bottom: 1px solid var(--rzd-border);
+    font-size: 15px;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Заголовки групп */
+.group-header td {
+    background: linear-gradient(135deg, var(--rzd-red) 0%, var(--rzd-red-hover) 100%);
+    color: var(--rzd-white);
+    font-weight: 600;
+    font-size: 15px;
+    padding: 14px 16px;
+    letter-spacing: 0.3px;
+}
+
+.group-header:hover td {
+    background: linear-gradient(135deg, var(--rzd-red-hover) 0%, var(--rzd-red) 100%);
+}
+
+/* Современный бейдж состояния */
+.state {
+    background: var(--rzd-success);
+    color: var(--rzd-white);
+    padding: 6px 14px;
+    border-radius: 20px;
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 4px rgba(40, 167, 69, 0.3);
+}
+
+/* Современные действия */
+.actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.actions img {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.actions img:hover {
+    opacity: 1;
+    background: var(--rzd-red-light);
+    transform: scale(1.1);
+}
+
+/* Адаптивный дизайн */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    
+    nav {
+        width: 100%;
+    }
+    
+    header {
+        flex-wrap: wrap;
+    }
+    
+    main {
+        padding: 16px;
+    }
+    
+    table {
+        font-size: 13px;
+    }
+    
+    th, td {
+        padding: 12px 8px;
+    }
+}
+
+/* Анимация загрузки */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+tbody tr {
+    animation: fadeIn 0.4s ease-out;
+}
